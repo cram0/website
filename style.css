@@ -1,0 +1,38 @@
+body {
+    background-color: rgb(26, 26, 26);
+    font-family: monospace;
+}
+
+a.github {
+    font-size: larger;
+    color: white;
+    margin-left: 2.5em;
+}
+
+a.cv {
+    font-size: larger;
+    color: white;
+    margin-left: 2.5em;
+}
+
+a.contact {
+    font-size: larger;
+    color: white;
+    margin-left: 2.5em;
+}
+
+p.email {
+    font-size: larger;
+    color: white;
+}
+
+p.description {
+    font-size: normal;
+    color: grey;
+    margin-left: 10em;
+}
+
+a.back_btn {
+    font-size: larger;
+    color: white;
+}
