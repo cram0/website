@@ -1,5 +1,7 @@
+/* Index.html */
+
 body {
-    background-color: rgb(26, 26, 26);
+    background-color: rgb(0, 0, 0);
     font-family: monospace;
 }
 
@@ -15,15 +17,16 @@ a.cv {
     margin-left: 2.5em;
 }
 
-a.contact {
+a.games {
     font-size: larger;
     color: white;
     margin-left: 2.5em;
 }
 
-p.email {
+a.contact {
     font-size: larger;
     color: white;
+    margin-left: 2.5em;
 }
 
 p.description {
@@ -32,7 +35,24 @@ p.description {
     margin-left: 10em;
 }
 
+table.main_table {
+    table-layout: fixed;
+}
+
+td.lisa {
+    word-wrap: break-word;
+}
+
+/* Contact.html */
+
+p.email {
+    font-size: larger;
+    color: white;
+}
+
 a.back_btn {
     font-size: larger;
     color: white;
 }
+
+/* Games.html */
