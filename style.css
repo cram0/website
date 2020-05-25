@@ -60,3 +60,9 @@ a.back_btn {
 }
 
 /* Games.html */
+
+p.games_desc {
+    font-size: larger;
+    color: white;
+    margin-left: 2.5em;
+}
