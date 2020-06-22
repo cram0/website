@@ -20,7 +20,7 @@
 
 title: cram0
 
-permalink: /:title/
+permalink: /:title
 
 url: "http://cram0.fr" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  Cram0
