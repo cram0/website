@@ -52,7 +52,7 @@ p.description {
 }
 
 table.main_table {
-    table-layout: fixed;
+    table-layout: auto;
     margin-left: auto;
     margin-right: auto;
 }
