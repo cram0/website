@@ -81,10 +81,16 @@ a.games:hover {
     animation : 1s infinite alternate ease-out breathing-select-red;
 }
 
+img.alk_idle {
+    float: left;
+}
+
 p.description {
     font-family: "Castlevania";
     color: grey;
-    margin-left: 10em;
+    float: right;
+    margin-left: 3em;
+    margin-top: auto;
 }
 
 /* Contact.html */
