@@ -140,12 +140,15 @@ p.games_desc {
     font-size: larger;
 }
 
-table.games_box {
+table.centered_box {
     border: solid;
     border-color: white;
     border-width: 1px;
 
+    margin-left: auto;
     margin-right: auto;
+    margin-top: 50vh;
+    transform: translateY(-50%);
 }
 
 /* TEST */
