@@ -44,7 +44,7 @@ td.menu {
 
 a.index_links {
     font-family: "Castlevania";
-    font-size: 24px;
+    font-size: 26px;
     color: white;
     text-decoration: none;
 }
@@ -103,12 +103,12 @@ table.contact_table {
 /* Games.html */
 
 p.games_desc {
-    font-size: 24px;
+    font-size: 26px;
     color: white;
 }
 
 .game_div {
-    font-size: 24px;
+    font-size: 26px;
     color: white;
     display: inline;
 }
