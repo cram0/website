@@ -7,7 +7,7 @@
                         {{ "-- Go back" }}
                     </router-link>
                 </ul>
-                <ul v-if="isMainMenu" v-for="choice in choiceList" class="text-white breathing-select-red">
+                <ul v-if="isMainMenu" v-for="choice in choiceList" class="text-white breathing-select-red text-center">
                     <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu">{{ choice.name }}</router-link>
                     <a v-else :href="choice.path">{{ choice.name }}</a>
                 </ul>
@@ -16,18 +16,18 @@
                     <div v-if="route.path === '/games'">
                         <ul v-for="games in gameList">
                             <div class="flex">
-                                <p class="text-xl text-white">
-                                    {{ games.name }}
-                                </p>
-                                <p v-if="!games.expanded" class="text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
-                                    {{ " - Expand" }}
-                                </p>
-                                <p v-else class="text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
-                                    {{ " - Collapse" }}
-                                </p>
+                                <label class="text-sm sm:text-sm md:text-base lg:text-lg text-white">
+                                    {{ games.name + " _ " }}
+                                </label>
+                                <label v-if="!games.expanded" class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
+                                    {{ " < Expand >" }}
+                                </label>
+                                <label v-else class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
+                                    {{ " > Collapse <" }}
+                                </label>
                             </div>
                             <div v-if="games.expanded" class="flex flex-wrap pb-4">
-                                <img v-for="image in games.images" :class="['', 'w-1/2', 'h-1/2', 'p-1']" :src="'/src/assets/games/' + image" alt="image" />
+                                <img v-for="image in games.images" :class="['', 'w-1/2', 'h-1/2', 'p-1']" :src="'./assets/' + image" alt="image" />
                             </div>
                         </ul>
                     </div>
@@ -39,9 +39,10 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
 
 const isMainMenu = ref(true);
 const mainMenuExpanded = ref(false);
@@ -64,6 +65,9 @@ watch(
         } else {
             isMainMenu.value = false;
             mainMenuExpanded.value = true;
+        }
+        if (route.path === "/index.html") {
+            router.push("/");
         }
     }
 );
@@ -118,7 +122,7 @@ const gameList = ref([
 <style>
 @font-face {
     font-family: "Castlevania";
-    src: url("/src/assets/font.ttf");
+    src: url("/assets/font.ttf");
 }
 
 @keyframes breathing-select-red {
