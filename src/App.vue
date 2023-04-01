@@ -1,61 +1,144 @@
 <template>
-	<div>
-		<div id="center-box" class="flex justify-center items-center h-60">
-			<div class="border border-gray-400 w-auto h-auto p-1">
-				<ul>
-					<a class="text-white breathing-select-red">Test</a>
-				</ul>
-				<ul>
-					<a class="text-white breathing-select-red">Test</a>
-				</ul>
-			</div>
-		</div>
-	</div>
+    <div>
+        <div id="center-box" class="flex justify-center items-center p-4">
+            <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
+                <ul class="text-white breathing-select-red">
+                    <router-link v-if="!isMainMenu" :to="{ path: '/' }">
+                        {{ "-- Go back" }}
+                    </router-link>
+                </ul>
+                <ul v-if="isMainMenu" v-for="choice in choiceList" class="text-white breathing-select-red">
+                    <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu">{{ choice.name }}</router-link>
+                    <a v-else :href="choice.path">{{ choice.name }}</a>
+                </ul>
+
+                <div v-if="mainMenuExpanded">
+                    <div v-if="route.path === '/games'">
+                        <ul v-for="games in gameList">
+                            <div class="flex">
+                                <p class="text-xl text-white">
+                                    {{ games.name }}
+                                </p>
+                                <p v-if="!games.expanded" class="text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
+                                    {{ " - Expand" }}
+                                </p>
+                                <p v-else class="text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
+                                    {{ " - Collapse" }}
+                                </p>
+                            </div>
+                            <div v-if="games.expanded" class="flex flex-wrap pb-4">
+                                <img v-for="image in games.images" :class="['', 'w-1/2', 'h-1/2', 'p-1']" :src="'/src/assets/games/' + image" alt="image" />
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-const msg = "Hello!";
-const isExpanded = ref(true);
+import { onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 
-function log() {
-	console.log(msg);
-}
+const route = useRoute();
+
+const isMainMenu = ref(true);
+const mainMenuExpanded = ref(false);
+
+const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1", "transition-all"]);
+
+const expandedStyle = ref(["border", "border-white", "w-1/2", "h-auto", "p-1", "transition-all"]);
+
+onMounted(() => {
+    console.log("Mounted");
+    console.log(route.path);
+});
+
+watch(
+    () => route.path,
+    () => {
+        if (route.path === "/") {
+            isMainMenu.value = true;
+            mainMenuExpanded.value = false;
+        } else {
+            isMainMenu.value = false;
+            mainMenuExpanded.value = true;
+        }
+    }
+);
+
+const choiceList = ref([
+    {
+        name: "Github",
+        path: "https://www.github.com/cram0",
+        externalLink: true
+    },
+    {
+        name: "???",
+        path: "/error",
+        externalLink: false
+    },
+    {
+        name: "Games",
+        path: "/games",
+        externalLink: false
+    },
+    {
+        name: "Projects",
+        path: "/projects",
+        externalLink: false
+    }
+]);
+
+const gameList = ref([
+    {
+        name: "my_hunter",
+        images: ["hunter1.png", "hunter2.png"],
+        expanded: false
+    },
+    {
+        name: "my_defender",
+        images: ["defender1.png", "defender2.png", "defender3.png", "defender4.png"],
+        expanded: false
+    },
+    {
+        name: "my_runner",
+        images: ["runner1.png", "runner2.png", "runner3.png", "runner4.png"],
+        expanded: false
+    },
+    {
+        name: "my_rpg",
+        images: ["rpg1.png", "rpg2.png", "rpg3.png", "rpg4.png", "rpgdbg1.png", "rpgdbg2.png"],
+        expanded: false
+    }
+]);
 </script>
 
 <style>
 @font-face {
-	font-family: "Castlevania";
-	src: url("/src/assets/font.ttf");
+    font-family: "Castlevania";
+    src: url("/src/assets/font.ttf");
 }
 
 @keyframes breathing-select-red {
-	from {
-		background-color: rgb(150, 0, 0);
-	}
-	to {
-		background-color: rgb(30, 0, 0);
-	}
+    from {
+        background-color: rgb(150, 0, 0);
+    }
+    to {
+        background-color: rgb(30, 0, 0);
+    }
 }
 
 .breathing-select-red:hover {
-	animation: 1s infinite alternate ease-out breathing-select-red;
-}
-
-.is-expanded {
+    animation: 1s infinite alternate ease-out breathing-select-red;
 }
 
 body {
-	font-family: "Castlevania", -apple-system, BlinkMacSystemFont, "Segoe UI",
-		Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
-		sans-serif;
-	-webkit-font-smoothing: none;
-	-moz-osx-font-smoothing: grayscale;
-	background-image: linear-gradient(
-		180deg,
-		rgba(2, 0, 36, 1) 0%,
-		rgba(0, 0, 32, 1) 11%,
-		rgba(65, 65, 150, 1) 100%
-	);
-	background-attachment: fixed;
+    font-family: "Castlevania", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    background-image: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 32, 1) 11%, rgba(65, 65, 150, 1) 100%);
+    background-attachment: fixed;
 }
 </style>

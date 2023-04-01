@@ -7,6 +7,14 @@ const router = createRouter({
 			path: "/",
 			name: "home",
 		},
+		{
+			path: "/games",
+			name: "games",
+		},
+		{
+			path: "/projects",
+			name: "projects",
+		},
 	],
 });
 
