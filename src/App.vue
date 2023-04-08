@@ -17,19 +17,22 @@
                         <ul v-for="games in gameList">
                             <div class="flex">
                                 <label class="text-sm sm:text-sm md:text-base lg:text-lg text-white">
-                                    {{ games.name + " _ " }}
+                                    {{ games.name }}
                                 </label>
                                 <label v-if="!games.expanded" class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
-                                    {{ " < Expand >" }}
+                                    {{ "Expand" }}
                                 </label>
                                 <label v-else class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
-                                    {{ " > Collapse <" }}
+                                    {{ "Collapse" }}
                                 </label>
                             </div>
                             <div v-if="games.expanded" class="flex flex-wrap pb-4">
                                 <img v-for="image in games.images" :class="['', 'w-1/2', 'h-1/2', 'p-1']" :src="'./assets/' + image" alt="image" />
                             </div>
                         </ul>
+                    </div>
+                    <div v-if="route.path === '/resume'">
+                        <div class="flex flex-wrap"><vue-pdf-app style="height: 100vh" pdf=""></vue-pdf-app>;</div>
                     </div>
                 </div>
             </div>
@@ -40,6 +43,9 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+
+import VuePdfApp from "vue3-pdf-app";
+import "vue3-pdf-app/dist/icons/main.css";
 
 const route = useRoute();
 const router = useRouter();
@@ -79,8 +85,8 @@ const choiceList = ref([
         externalLink: true
     },
     {
-        name: "???",
-        path: "/error",
+        name: "Resume",
+        path: "/resume",
         externalLink: false
     },
     {
