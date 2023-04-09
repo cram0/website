@@ -3,7 +3,7 @@
     "short_name": "cram.boo",
     "icons": [
         {
-            "src": "/android-chrome-96x96.png",
+            "src": "/android-chrome-96x96.png?v=2",
             "sizes": "96x96",
             "type": "image/png"
         }
