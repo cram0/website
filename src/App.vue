@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="center-box" class="flex justify-center items-center">
+        <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', mainMenuExpanded ? 'pt-4' : 'pt-56']">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="text-white breathing-select-red">
                     <router-link v-if="!isMainMenu" :to="{ path: '/' }" class="block">
@@ -27,7 +27,7 @@
                                 </label>
                             </div>
                             <div v-if="game.expanded" class="flex flex-wrap p-1">
-                                <img v-for="image in game.images" class="md:w-1/2 p-2" :src="'./assets/' + image" alt="image" />
+                                <img v-for="image in game.images" class="md:w-1/2 p-2" :src="'./assets/' + image" alt="image" rel="preload" />
                             </div>
                         </ul>
                     </div>
@@ -37,8 +37,8 @@
                                 {{ language.name }}
                             </label>
                         </div>
-                        <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" src="/assets/CV_Julien_Augugliaro_EN.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
-                        <embed v-else src="/assets/CV_Julien_Augugliaro_FR.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" :src="englishResume" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <embed v-else :src="frenchResume" type="application/pdf" style="height: 100vh; width: 100%" />
                     </div>
                 </div>
             </div>
@@ -50,6 +50,9 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+
+import frenchResume from "/assets/CV_Julien_Augugliaro_FR.pdf"
+import englishResume from "/assets/CV_Julien_Augugliaro_EN.pdf"
 
 const route = useRoute();
 const router = useRouter();
@@ -74,12 +77,10 @@ const selectResumeLanguage = (name) => {
 const resumeList = ref([
     {
         name: "FRANCAIS",
-        path: "/assets/resume/CV_Julien_Augugliaro_FR.pdf",
         selected: true
     },
     {
         name: "ENGLISH",
-        path: "/assets/resume/CV_Julien_Augugliaro_EN.pdf",
         selected: false
     }
 ]);
