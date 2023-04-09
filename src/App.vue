@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div>
         <div id="center-box" class="flex justify-center items-center">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="text-white breathing-select-red">
@@ -32,14 +32,18 @@
                         </ul>
                     </div>
                     <div v-if="route.path === '/resume'">
-                        <!-- <embed v-for="resume in resumes" :src="resume.path" type="application/pdf" style="height: 100vh; width: 100%" /> -->
-                        <embed src="/assets/resume/CV_Julien_Augugliaro_EN.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
-                        <embed src="/assets/resume/CV_Julien_Augugliaro_FR.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <div class="flex justify-center items-center divide-x p-1">
+                            <label v-for="language in resumeList" class="block text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red p-1" @click.prevent="selectResumeLanguage(language.name)">
+                                {{ language.name }}
+                            </label>
+                        </div>
+                        <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" src="/assets/resume/CV_Julien_Augugliaro_EN.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <embed v-else src="/assets/resume/CV_Julien_Augugliaro_FR.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
                     </div>
                 </div>
             </div>
+            <img src="/assets/statue.png" style="position: fixed; bottom: 0; right: 0; max-width: 99%; max-height: 99%" />
         </div>
-        <img src="/assets/statue.png" style="position: fixed; bottom: 0; right: 0; max-width: 99%; max-height: 99%" />
     </div>
 </template>
 
@@ -57,14 +61,24 @@ const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1",
 
 const expandedStyle = ref(["border", "border-white", "w-3/4", "h-auto", "p-1", "transition-all"]);
 
-const resumeLanguage = ref([
+const selectResumeLanguage = (name) => {
+    resumeList.value.forEach((language) => {
+        if (language.name === name) {
+            language.selected = true;
+        } else {
+            language.selected = false;
+        }
+    });
+};
+
+const resumeList = ref([
     {
-        name: "FR",
+        name: "FRANCAIS",
         path: "/assets/resume/CV_Julien_Augugliaro_FR.pdf",
         selected: true
     },
     {
-        name: "EN",
+        name: "ENGLISH",
         path: "/assets/resume/CV_Julien_Augugliaro_EN.pdf",
         selected: false
     }
