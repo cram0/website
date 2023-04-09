@@ -3,7 +3,7 @@
         <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', mainMenuExpanded ? 'pt-4' : 'pt-56']">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="text-white breathing-select-red">
-                    <router-link v-if="!isMainMenu" :to="{ path: '/' }" class="block">
+                    <router-link v-if="!isMainMenu" :to="{ path: '/' }" @click.prevent="shouldCollapseGames(route.path)" class="block">
                         {{ "-- Go back" }}
                     </router-link>
                 </ul>
@@ -64,6 +64,14 @@ const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1",
 
 const expandedStyle = ref(["border", "border-white", "w-3/4", "h-auto", "p-1", "transition-all"]);
 
+const shouldCollapseGames = (path) => {
+    if (path === "/games") {
+        gameList.value.forEach((game) => {
+            game.expanded = false;
+        });
+    }
+};
+
 const selectResumeLanguage = (name) => {
     resumeList.value.forEach((language) => {
         if (language.name === name) {
@@ -86,8 +94,7 @@ const resumeList = ref([
 ]);
 
 onMounted(() => {
-    console.log("Mounted");
-    console.log(route.path);
+
 });
 
 watch(
@@ -99,9 +106,6 @@ watch(
         } else {
             isMainMenu.value = false;
             mainMenuExpanded.value = true;
-        }
-        if (route.path === "/index.html") {
-            router.push("/");
         }
     }
 );
