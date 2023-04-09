@@ -15,19 +15,19 @@
                 <div v-if="mainMenuExpanded">
                     <div v-if="route.path === '/games'" class="flex flex-col items-center">
                         <ul v-for="game in gameList">
-                            <div class="flex justify-center">
-                                <label class="text-sm sm:text-sm md:text-base lg:text-lg text-white">
-                                    {{ game.name }}
+                            <div class="flex justify-center pb-4">
+                                <label class="text-base text-white">
+                                    {{ game.name + "&nbsp;" }}
                                 </label>
-                                <label v-if="!game.expanded" class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
-                                    {{ "Expand" }}
+                                <label v-if="!game.expanded" class="text-base text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
+                                    {{ "<Expand>" }}
                                 </label>
-                                <label v-else class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
-                                    {{ "Collapse" }}
+                                <label v-else class="text-base text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
+                                    {{ ">Collapse<" }}
                                 </label>
                             </div>
-                            <div v-if="game.expanded" class="flex flex-wrap pb-4">
-                                <img v-for="image in game.images" class="w-1/2 h-1/2 p-1" :src="'./assets/' + image" alt="image" />
+                            <div v-if="game.expanded" class="flex flex-wrap p-1">
+                                <img v-for="image in game.images" class="md:w-1/2 p-2" :src="'./assets/' + image" alt="image" />
                             </div>
                         </ul>
                     </div>
@@ -37,8 +37,8 @@
                                 {{ language.name }}
                             </label>
                         </div>
-                        <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" src="/assets/resume/CV_Julien_Augugliaro_EN.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
-                        <embed v-else src="/assets/resume/CV_Julien_Augugliaro_FR.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" src="/assets/CV_Julien_Augugliaro_EN.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <embed v-else src="/assets/CV_Julien_Augugliaro_FR.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
                     </div>
                 </div>
             </div>
@@ -173,6 +173,7 @@ const gameList = ref([
 
 body {
     font-family: "Castlevania", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-smooth: never;
     -webkit-font-smoothing: none;
     -moz-osx-font-smoothing: grayscale;
     background-image: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 32, 1) 11%, rgba(65, 65, 150, 1) 100%);
