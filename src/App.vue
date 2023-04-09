@@ -7,7 +7,7 @@
                         {{ "-- Go back" }}
                     </router-link>
                 </ul>
-                <ul v-if="isMainMenu" v-for="choice in choiceList" class="text-white breathing-select-red text-center">
+                <ul v-if="isMainMenu" v-for="choice in choiceList" class="text-white breathing-select-red text-center w-">
                     <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu">{{ choice.name }}</router-link>
                     <a v-else :href="choice.path">{{ choice.name }}</a>
                 </ul>
@@ -32,7 +32,7 @@
                         </ul>
                     </div>
                     <div v-if="route.path === '/resume'">
-                        <div class="flex flex-wrap"><vue-pdf-app style="height: 100vh" pdf=""></vue-pdf-app>;</div>
+                        <vue-pdf-app style="height: 80vh" :pdf="'/assets/resume/CV_Julien_Augugliaro_FR.pdf'" page-scale="page-height" :config="{ toolbarViewerLeft: false }"></vue-pdf-app>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@ const mainMenuExpanded = ref(false);
 
 const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1", "transition-all"]);
 
-const expandedStyle = ref(["border", "border-white", "w-1/2", "h-auto", "p-1", "transition-all"]);
+const expandedStyle = ref(["border", "border-white", "w-3/4", "h-auto", "p-1", "transition-all"]);
 
 onMounted(() => {
     console.log("Mounted");
