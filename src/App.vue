@@ -1,51 +1,51 @@
 <template>
-    <div>
-        <div id="center-box" class="flex justify-center items-center p-4">
+    <div class="">
+        <div id="center-box" class="flex justify-center items-center">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="text-white breathing-select-red">
-                    <router-link v-if="!isMainMenu" :to="{ path: '/' }">
+                    <router-link v-if="!isMainMenu" :to="{ path: '/' }" class="block">
                         {{ "-- Go back" }}
                     </router-link>
                 </ul>
                 <ul v-if="isMainMenu" v-for="choice in choiceList" class="text-white breathing-select-red text-center w-">
-                    <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu">{{ choice.name }}</router-link>
-                    <a v-else :href="choice.path">{{ choice.name }}</a>
+                    <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu" class="block">{{ choice.name }}</router-link>
+                    <a v-else :href="choice.path" target="_blank" rel="noopener noreferrer" class="block">{{ choice.name }}</a>
                 </ul>
 
                 <div v-if="mainMenuExpanded">
-                    <div v-if="route.path === '/games'">
-                        <ul v-for="games in gameList">
-                            <div class="flex">
+                    <div v-if="route.path === '/games'" class="flex flex-col items-center">
+                        <ul v-for="game in gameList">
+                            <div class="flex justify-center">
                                 <label class="text-sm sm:text-sm md:text-base lg:text-lg text-white">
-                                    {{ games.name }}
+                                    {{ game.name }}
                                 </label>
-                                <label v-if="!games.expanded" class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
+                                <label v-if="!game.expanded" class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
                                     {{ "Expand" }}
                                 </label>
-                                <label v-else class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="games.expanded = !games.expanded">
+                                <label v-else class="text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
                                     {{ "Collapse" }}
                                 </label>
                             </div>
-                            <div v-if="games.expanded" class="flex flex-wrap pb-4">
-                                <img v-for="image in games.images" :class="['', 'w-1/2', 'h-1/2', 'p-1']" :src="'./assets/' + image" alt="image" />
+                            <div v-if="game.expanded" class="flex flex-wrap pb-4">
+                                <img v-for="image in game.images" class="w-1/2 h-1/2 p-1" :src="'./assets/' + image" alt="image" />
                             </div>
                         </ul>
                     </div>
                     <div v-if="route.path === '/resume'">
-                        <vue-pdf-app style="height: 80vh" :pdf="'/assets/resume/CV_Julien_Augugliaro_FR.pdf'" page-scale="page-height" :config="{ toolbarViewerLeft: false }"></vue-pdf-app>
+                        <!-- <embed v-for="resume in resumes" :src="resume.path" type="application/pdf" style="height: 100vh; width: 100%" /> -->
+                        <embed src="/assets/resume/CV_Julien_Augugliaro_EN.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <embed src="/assets/resume/CV_Julien_Augugliaro_FR.pdf" type="application/pdf" style="height: 100vh; width: 100%" />
                     </div>
                 </div>
             </div>
         </div>
+        <img src="/assets/statue.png" style="position: fixed; bottom: 0; right: 0; max-width: 99%; max-height: 99%" />
     </div>
 </template>
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-
-import VuePdfApp from "vue3-pdf-app";
-import "vue3-pdf-app/dist/icons/main.css";
 
 const route = useRoute();
 const router = useRouter();
@@ -56,6 +56,19 @@ const mainMenuExpanded = ref(false);
 const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1", "transition-all"]);
 
 const expandedStyle = ref(["border", "border-white", "w-3/4", "h-auto", "p-1", "transition-all"]);
+
+const resumeLanguage = ref([
+    {
+        name: "FR",
+        path: "/assets/resume/CV_Julien_Augugliaro_FR.pdf",
+        selected: true
+    },
+    {
+        name: "EN",
+        path: "/assets/resume/CV_Julien_Augugliaro_EN.pdf",
+        selected: false
+    }
+]);
 
 onMounted(() => {
     console.log("Mounted");
