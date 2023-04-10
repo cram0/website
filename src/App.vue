@@ -1,39 +1,41 @@
 <template>
     <div>
-        <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', mainMenuExpanded ? 'pt-4' : 'pt-56']">
+        <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', setMainMenuSizeBasedOnPage()]">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
-                <ul class="text-white breathing-select-red">
-                    <router-link v-if="!isMainMenu" :to="{ path: '/' }" @click.prevent="shouldCollapseGames(route.path)" class="block">
+                <ul class="breathing-select-red">
+                    <a v-if="!isMainMenu" @click.prevent="goBackButton()" class="block hover:cursor-pointer breathing-text">
                         {{ "-- Go back" }}
-                    </router-link>
+                    </a>
                 </ul>
-                <ul v-if="isMainMenu" v-for="choice in choiceList" class="text-white breathing-select-red text-center w-">
+                <ul v-if="isMainMenu" v-for="choice in choiceList" class="breathing-select-red text-center">
                     <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu" class="block">{{ choice.name }}</router-link>
                     <a v-else :href="choice.path" target="_blank" rel="noopener noreferrer" class="block">{{ choice.name }}</a>
                 </ul>
 
                 <div v-if="mainMenuExpanded">
-                    <div v-if="route.path === '/games'" class="flex flex-col items-center">
-                        <ul v-for="game in gameList">
-                            <div class="flex justify-center pb-4">
-                                <label class="text-base text-white">
-                                    {{ game.name + "&nbsp;" }}
-                                </label>
-                                <label v-if="!game.expanded" class="text-base text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
-                                    {{ "<Expand>" }}
-                                </label>
-                                <label v-else class="text-base text-white hover:cursor-pointer breathing-select-red" @click.prevent="game.expanded = !game.expanded">
-                                    {{ ">Collapse<" }}
-                                </label>
+                    <div v-if="route.path.startsWith('/games')" class="flex flex-col items-center">
+                        <div v-if="route.path.startsWith('/games/')">
+                            <div v-for="game in gameList" class="grid grid-cols-2 gap-4">
+                                <div class="flex justify-center" v-if="route.path === '/games' + game.path">
+                                    <h1 class="text-xl pb-2">{{ game.name }}</h1>
+                                </div>
+                                <div class="flex justify-center" v-if="route.path === '/games' + game.path">
+                                    <p class="">{{ game.description }}</p>
+                                </div>
+                                <img v-for="image in game.images" v-if="route.path === '/games' + game.path" :src="'/assets/' + image" class="" />
                             </div>
-                            <div v-if="game.expanded" class="flex flex-wrap p-1">
-                                <img v-for="image in game.images" class="md:w-1/2 p-2" :src="'./assets/' + image" alt="image" rel="preload" />
-                            </div>
-                        </ul>
+                        </div>
+                        <div v-else>
+                            <ul v-for="game in gameList">
+                                <div class="flex justify-center">
+                                    <router-link class="hover:cursor-pointer breathing-select-red" :to="{ path: '/games' + game.path }"> {{ game.name }}</router-link>
+                                </div>
+                            </ul>
+                        </div>
                     </div>
                     <div v-if="route.path === '/resume'">
                         <div class="flex justify-center items-center divide-x p-1">
-                            <label v-for="language in resumeList" class="block text-sm sm:text-sm md:text-base lg:text-lg text-white hover:cursor-pointer breathing-select-red p-1" @click.prevent="selectResumeLanguage(language.name)">
+                            <label v-for="language in resumeList" class="block hover:cursor-pointer breathing-select-red p-1" @click.prevent="selectResumeLanguage(language.name)">
                                 {{ language.name }}
                             </label>
                         </div>
@@ -42,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            <img src="/assets/statue.png" style="position: fixed; bottom: 0; right: 0; max-width: 99%; max-height: 99%" />
+            <img src="/assets/statue.png" style="position: fixed; bottom: 0; right: 0; max-width: 100%; max-height: 100%" />
         </div>
     </div>
 </template>
@@ -51,8 +53,8 @@
 import { onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import frenchResume from "/assets/CV_Julien_Augugliaro_FR.pdf"
-import englishResume from "/assets/CV_Julien_Augugliaro_EN.pdf"
+import frenchResume from "/assets/CV_Julien_Augugliaro_FR.pdf";
+import englishResume from "/assets/CV_Julien_Augugliaro_EN.pdf";
 
 const route = useRoute();
 const router = useRouter();
@@ -64,11 +66,22 @@ const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1",
 
 const expandedStyle = ref(["border", "border-white", "w-3/4", "h-auto", "p-1", "transition-all"]);
 
-const shouldCollapseGames = (path) => {
-    if (path === "/games") {
-        gameList.value.forEach((game) => {
-            game.expanded = false;
-        });
+const goBackButton = () => {
+    if (route.path.startsWith("/games/")) {
+        router.push("/games");
+    } else {
+        router.push("/");
+    }
+};
+
+const setMainMenuSizeBasedOnPage = () => {
+    if (route.path.startsWith("/games/")) {
+        return "pt-8";
+    }
+    if (mainMenuExpanded.value) {
+        return "pt-4";
+    } else {
+        return "pt-56";
     }
 };
 
@@ -93,9 +106,7 @@ const resumeList = ref([
     }
 ]);
 
-onMounted(() => {
-
-});
+onMounted(() => {});
 
 watch(
     () => route.path,
@@ -137,22 +148,30 @@ const gameList = ref([
     {
         name: "my_hunter",
         images: ["hunter1.png", "hunter2.png"],
-        expanded: false
+        expanded: false,
+        description: "A simple game where you have to shoot the bats that appear on the screen.",
+        path: "/hunter"
     },
     {
         name: "my_defender",
         images: ["defender1.png", "defender2.png", "defender3.png", "defender4.png"],
-        expanded: false
+        expanded: false,
+        description: "A simple tower defense game where you have to defend yourself from the enemies that appear on the screen.",
+        path: "/defender"
     },
     {
         name: "my_runner",
         images: ["runner1.png", "runner2.png", "runner3.png", "runner4.png"],
-        expanded: false
+        expanded: false,
+        description: "A simple runner game where you have to avoid the obstacles that appear on the screen.",
+        path: "/runner"
     },
     {
         name: "my_rpg",
         images: ["rpg1.png", "rpg2.png", "rpg3.png", "rpg4.png", "rpgdbg1.png", "rpgdbg2.png"],
-        expanded: false
+        expanded: false,
+        description: "A simple RPG game where you have to fight the enemies that appear on the screen.",
+        path: "/rpg"
     }
 ]);
 </script>
@@ -172,13 +191,23 @@ const gameList = ref([
     }
 }
 
+@keyframes breathing-text {
+    from {
+        color: rgb(0, 0, 150);
+    }
+    to {
+        color: rgb(0, 0, 30);
+    }
+}
+
 .breathing-select-red:hover {
     animation: 1s infinite alternate ease-out breathing-select-red;
 }
 
 body {
     font-family: "Castlevania", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    font-smooth: never;
+    font-size: 16px;
+    color: white;
     -webkit-font-smoothing: none;
     -moz-osx-font-smoothing: grayscale;
     background-image: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 32, 1) 11%, rgba(65, 65, 150, 1) 100%);
