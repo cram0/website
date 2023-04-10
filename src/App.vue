@@ -40,8 +40,11 @@
                                 {{ language.name }}
                             </label>
                         </div>
-                        <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" :src="englishResume" type="application/pdf" style="height: 100vh; width: 100%" />
-                        <embed v-else :src="frenchResume" type="application/pdf" style="height: 100vh; width: 100%" />
+                        <div class="bg-white">
+                            <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" :src="englishResume" type="application/pdf" class="h-screen w-full max-sm:h-full max-sm:w-full" />
+                            <!-- <embed v-else :src="frenchResume" type="application/pdf" style="height: 100%; width: 100%" /> -->
+                            <embed v-else :src="frenchResume" type="application/pdf" class="h-screen w-full max-sm:h-full max-sm:w-full" />
+                        </div>
                     </div>
                 </div>
             </div>
