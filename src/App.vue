@@ -22,7 +22,8 @@
                                 <div class="flex justify-center" v-if="route.path === '/games' + game.path">
                                     <p class="">{{ game.description }}</p>
                                 </div>
-                                <img v-for="image in game.images" v-if="route.path === '/games' + game.path" :src="'/assets/' + image" class="" />
+                                <img v-for="image in game.images" v-if="route.path === '/games' + game.path" :src="getImgurLinkPng(image)" class="" />
+                                <img v-for="gif in game.gifs" v-if="game.gifs && route.path === '/games' + game.path" :src="getImgurLinkGif(gif)" class="" />
                             </div>
                         </div>
                         <div v-else>
@@ -65,6 +66,14 @@ const mainMenuExpanded = ref(false);
 const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1", "transition-all"]);
 
 const expandedStyle = ref(["border", "border-white", "w-3/4", "h-auto", "p-1", "transition-all"]);
+
+const getImgurLinkPng = (code) => {
+    return "https://i.imgur.com/" + code + ".png";
+};
+
+const getImgurLinkGif = (code) => {
+    return "https://i.imgur.com/" + code + ".gif";
+};
 
 const goBackButton = () => {
     if (route.path.startsWith("/games/")) {
@@ -147,28 +156,29 @@ const choiceList = ref([
 const gameList = ref([
     {
         name: "my_hunter",
-        images: ["hunter1.png", "hunter2.png"],
+        images: ["kZOlUwb", "AUUs4Gu"],
         expanded: false,
         description: "A simple game where you have to shoot the bats that appear on the screen.",
         path: "/hunter"
     },
     {
         name: "my_defender",
-        images: ["defender1.png", "defender2.png", "defender3.png", "defender4.png"],
+        images: ["XJqaBT6", "XUvzQ0B", "l2yjcwz", "huGYc5f"],
         expanded: false,
         description: "A simple tower defense game where you have to defend yourself from the enemies that appear on the screen.",
         path: "/defender"
     },
     {
         name: "my_runner",
-        images: ["runner1.png", "runner2.png", "runner3.png", "runner4.png"],
+        images: ["68JHW56", "rxrsvgv", "fYHNp5A", "l9ptsSk"],
         expanded: false,
         description: "A simple runner game where you have to avoid the obstacles that appear on the screen.",
         path: "/runner"
     },
     {
         name: "my_rpg",
-        images: ["rpg1.png", "rpg2.png", "rpg3.png", "rpg4.png", "rpgdbg1.png", "rpgdbg2.png"],
+        images: ["4D3bYQN", "8sqU2FZ", "X8s83Fn", "wP4qO3V", "xInvYe5", "ANpS6AU"],
+        gifs: ["lYSPS2P", "TVUzolr", "9wS8M3x", "HP0eN7y", "bl2RWgi", "WY7gG1m", "7CHtu2W", "NYDglF9", "wNNVTzU"],
         expanded: false,
         description: "A simple RPG game where you have to fight the enemies that appear on the screen.",
         path: "/rpg"
