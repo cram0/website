@@ -15,15 +15,20 @@
                 <div v-if="mainMenuExpanded">
                     <div v-if="route.path.startsWith('/games')" class="flex flex-col items-center">
                         <div v-if="route.path.startsWith('/games/')">
-                            <div v-for="game in gameList" class="grid grid-cols-2 gap-4">
+                            <div v-for="game in gameList">
                                 <div class="flex justify-center" v-if="route.path === '/games' + game.path">
-                                    <h1 class="text-xl pb-2">{{ game.name }}</h1>
+                                    <h1 class="text-5xl pb-4">{{ game.name }}</h1>
                                 </div>
-                                <div class="flex justify-center" v-if="route.path === '/games' + game.path">
+                                <div class="flex justify-center pb-4" v-if="route.path === '/games' + game.path">
                                     <p class="">{{ game.description }}</p>
                                 </div>
-                                <img v-for="image in game.images" v-if="route.path === '/games' + game.path" :src="getImgurLinkPng(image)" class="" />
-                                <img v-for="gif in game.gifs" v-if="game.gifs && route.path === '/games' + game.path" :src="getImgurLinkGif(gif)" class="" />
+                                <div class="flex justify-center pb-4" v-if="game.repository && route.path === '/games' + game.path">
+                                    {{ "Github link --&nbsp;" }} <a :href="game.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red">{{ "Here" }}</a>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 pr-2 pl-2 pb-0.5">
+                                    <img v-for="image in game.images" v-if="game.images && route.path === '/games' + game.path" :src="getImgurLinkPng(image)" class="" />
+                                    <img v-for="gif in game.gifs" v-if="game.gifs && route.path === '/games' + game.path" :src="getImgurLinkGif(gif)" class="" />
+                                </div>
                             </div>
                         </div>
                         <div v-else>
@@ -42,13 +47,38 @@
                         </div>
                         <div class="bg-white">
                             <embed v-if="resumeList.find((e) => e.name === 'ENGLISH').selected == true" :src="englishResume" type="application/pdf" class="h-screen w-full max-sm:h-full max-sm:w-full" />
-                            <!-- <embed v-else :src="frenchResume" type="application/pdf" style="height: 100%; width: 100%" /> -->
                             <embed v-else :src="frenchResume" type="application/pdf" class="h-screen w-full max-sm:h-full max-sm:w-full" />
+                        </div>
+                    </div>
+                    <div v-if="route.path.startsWith('/projects')" class="flex flex-col items-center">
+                        <div v-if="route.path.startsWith('/projects/')">
+                            <div v-for="project in projectList">
+                                <div class="flex justify-center" v-if="route.path === '/projects' + project.path">
+                                    <h1 class="text-5xl pb-4">{{ project.name }}</h1>
+                                </div>
+                                <div class="flex justify-center pb-4" v-if="route.path === '/projects' + project.path">
+                                    <p class="">{{ project.description }}</p>
+                                </div>
+                                <div class="flex justify-center pb-4" v-if="project.repository && route.path === '/projects' + project.path">
+                                    {{ "Github link --&nbsp;" }} <a :href="project.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red">{{ "Here" }}</a>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 pr-2 pl-2 pb-0.5">
+                                    <img v-for="image in project.images" v-if="project.images && route.path === '/projects' + project.path" :src="getImgurLinkPng(image)" class="" />
+                                    <img v-for="gif in project.gifs" v-if="project.gifs && route.path === '/projects' + project.path" :src="getImgurLinkGif(gif)" class="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <ul v-for="project in projectList">
+                                <div class="flex justify-center">
+                                    <router-link class="hover:cursor-pointer breathing-select-red" :to="{ path: '/projects' + project.path }"> {{ project.name }}</router-link>
+                                </div>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <img src="/assets/statue.png" style="position: fixed; bottom: 0; right: 0; max-width: 100%; max-height: 100%" />
+            <img src="/assets/statue.png" class="statue" />
         </div>
     </div>
 </template>
@@ -79,7 +109,9 @@ const getImgurLinkGif = (code) => {
 };
 
 const goBackButton = () => {
-    if (route.path.startsWith("/games/")) {
+    if (route.path.startsWith("/projects/")) {
+        router.push("/projects");
+    } else if (route.path.startsWith("/games/")) {
         router.push("/games");
     } else {
         router.push("/");
@@ -88,6 +120,9 @@ const goBackButton = () => {
 
 const setMainMenuSizeBasedOnPage = () => {
     if (route.path.startsWith("/games/")) {
+        return "pt-8";
+    }
+    if (route.path.startsWith("/projects/")) {
         return "pt-8";
     }
     if (mainMenuExpanded.value) {
@@ -162,6 +197,7 @@ const gameList = ref([
         images: ["kZOlUwb", "AUUs4Gu"],
         expanded: false,
         description: "A simple game where you have to shoot the bats that appear on the screen.",
+        repository: "https://github.com/cram0/my_hunter_2019",
         path: "/hunter"
     },
     {
@@ -169,6 +205,7 @@ const gameList = ref([
         images: ["XJqaBT6", "XUvzQ0B", "l2yjcwz", "huGYc5f"],
         expanded: false,
         description: "A simple tower defense game where you have to defend yourself from the enemies that appear on the screen.",
+        repository: "https://github.com/cram0/my_defender_2019",
         path: "/defender"
     },
     {
@@ -176,6 +213,7 @@ const gameList = ref([
         images: ["68JHW56", "rxrsvgv", "fYHNp5A", "l9ptsSk"],
         expanded: false,
         description: "A simple runner game where you have to avoid the obstacles that appear on the screen.",
+        repository: "https://github.com/cram0/my_runner_2019",
         path: "/runner"
     },
     {
@@ -184,7 +222,46 @@ const gameList = ref([
         gifs: ["lYSPS2P", "TVUzolr", "9wS8M3x", "HP0eN7y", "bl2RWgi", "WY7gG1m", "7CHtu2W", "NYDglF9", "wNNVTzU"],
         expanded: false,
         description: "A simple RPG game where you have to fight the enemies that appear on the screen.",
+        repository: "https://github.com/cram0/my_rpg_2019",
         path: "/rpg"
+    },
+    {
+        name: "arcade",
+        expanded: false,
+        description: "Simulation of an arcade machine made in C++ using SDL2, SFML and ncurses libraries.",
+        repository: "https://github.com/cram0/arcade_2020",
+        path: "/arcade"
+    }
+]);
+
+const projectList = ref([
+    {
+        name: "zia",
+        expanded: false,
+        description: "HTTP(S) server running on both Windows and Linux",
+        repository: "https://github.com/cram0/zia",
+        path: "/zia"
+    },
+    {
+        name: "plazza",
+        expanded: false,
+        description: "Program that simulates a pizzeria with kitchen(processes) with cooks(threads) and FIFO files to make them communicate between eachother",
+        repository: "https://github.com/cram0/plazza",
+        path: "/plazza"
+    },
+    {
+        name: "minilibC",
+        expanded: false,
+        description: "Implementation of the libc functions in Assembly language with NASM",
+        repository: "https://github.com/cram0/minilibC",
+        path: "/minilibc"
+    },
+    {
+        name: "Game of Life",
+        expanded: false,
+        description: "A simple game based on John Conway's Game of Life",
+        repository: "https://github.com/cram0/Game_of_Life",
+        path: "/game_of_life"
     }
 ]);
 </script>
@@ -218,12 +295,18 @@ const gameList = ref([
 }
 
 body {
-    font-family: "Castlevania", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: "Castlevania", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     font-size: 16px;
     color: white;
-    -webkit-font-smoothing: none;
-    -moz-osx-font-smoothing: grayscale;
     background-image: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 32, 1) 11%, rgba(65, 65, 150, 1) 100%);
     background-attachment: fixed;
+}
+
+.statue {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 100%;
 }
 </style>
