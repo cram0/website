@@ -295,8 +295,8 @@ const projectList = ref([
 }
 
 body {
-    font-family: "Castlevania", -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    font-size: 16px;
+    font-family: "Castlevania", Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 20px;
     color: white;
     background-image: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 32, 1) 11%, rgba(65, 65, 150, 1) 100%);
     background-attachment: fixed;
