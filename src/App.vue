@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="getPixellatedFont()">
         <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', setMainMenuSizeBasedOnPage()]">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="breathing-select-red">
@@ -13,7 +13,7 @@
                 </ul>
 
                 <div v-if="mainMenuExpanded">
-                    <div v-if="route.path.startsWith('/games')" class="flex flex-col items-center">
+                    <div v-if="route.path.startsWith('/games')">
                         <div v-if="route.path.startsWith('/games/')">
                             <div v-for="game in gameList">
                                 <div class="flex justify-center" v-if="route.path === '/games' + game.path">
@@ -32,10 +32,8 @@
                             </div>
                         </div>
                         <div v-else>
-                            <ul v-for="game in gameList">
-                                <div class="flex justify-center">
-                                    <router-link class="hover:cursor-pointer breathing-select-red" :to="{ path: '/games' + game.path }"> {{ game.name }}</router-link>
-                                </div>
+                            <ul v-for="game in gameList" class="breathing-select-red text-center">
+                                <router-link :to="{ path: '/games' + game.path }" class="block"> {{ game.name }}</router-link>
                             </ul>
                         </div>
                     </div>
@@ -50,7 +48,7 @@
                             <embed v-else :src="frenchResume" type="application/pdf" class="h-screen w-full max-sm:h-full max-sm:w-full" />
                         </div>
                     </div>
-                    <div v-if="route.path.startsWith('/projects')" class="flex flex-col items-center">
+                    <div v-if="route.path.startsWith('/projects')">
                         <div v-if="route.path.startsWith('/projects/')">
                             <div v-for="project in projectList">
                                 <div class="flex justify-center" v-if="route.path === '/projects' + project.path">
@@ -70,10 +68,23 @@
                         </div>
                         <div v-else>
                             <ul v-for="project in projectList">
-                                <div class="flex justify-center">
-                                    <router-link class="hover:cursor-pointer breathing-select-red" :to="{ path: '/projects' + project.path }"> {{ project.name }}</router-link>
+                                <div class="breathing-select-red text-center">
+                                    <router-link class="block" :to="{ path: '/projects' + project.path }"> {{ project.name }}</router-link>
                                 </div>
                             </ul>
+                        </div>
+                    </div>
+
+                    <div v-if="route.path === '/contact'">
+                        {{ "Work in progress .." }}
+                    </div>
+                    <div v-if="route.path === '/accessibility'">
+                        <div class="grid gap-4">
+                            <h1 class="text-5xl text-center">Accessibility</h1>
+                            <div v-for="setting in accessibilitySettingsList" class="flex flex-row items-center">
+                                {{ "-&nbsp;" + setting.name + "&nbsp;" }}
+                                <img class="block hover:cursor-pointer" :src="getButtonBasedOnState(setting.selected)" @click.prevent="toggleAccessibilitySetting(setting)" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,15 +101,39 @@ import { useRouter, useRoute } from "vue-router";
 import frenchResume from "/assets/CV_Julien_Augugliaro_FR.pdf";
 import englishResume from "/assets/CV_Julien_Augugliaro_EN.pdf";
 
+import onButton from "/assets/on.png";
+import offButton from "/assets/off.png";
+
 const route = useRoute();
 const router = useRouter();
 
 const isMainMenu = ref(true);
 const mainMenuExpanded = ref(false);
 
-const notExpandedStyle = ref(["border", "border-white", "w-1/4", "h-1/4", "p-1", "transition-all"]);
+const notExpandedStyle = ref(["border", "border-white", "w-1/4", "p-1", "transition-all", "min-w-fit", "min-h-fit"]);
 
-const expandedStyle = ref(["border", "border-white", "w-3/4", "h-auto", "p-1", "transition-all"]);
+const expandedStyle = ref(["border", "border-white", "w-3/4", "p-1", "transition-all"]);
+
+const getPixellatedFont = () => {
+    if (localStorage.getItem("pixellatedFont") === "true") {
+        return "pixellated-font";
+    } else {
+        return "";
+    }
+};
+
+const getButtonBasedOnState = (state) => {
+    if (state) {
+        return onButton;
+    } else {
+        return offButton;
+    }
+};
+
+const toggleAccessibilitySetting = (setting) => {
+    setting.selected = !setting.selected;
+    localStorage.setItem("pixellatedFont", setting.selected);
+};
 
 const getImgurLinkPng = (code) => {
     return "https://i.imgur.com/" + code + ".png";
@@ -128,7 +163,7 @@ const setMainMenuSizeBasedOnPage = () => {
     if (mainMenuExpanded.value) {
         return "pt-4";
     } else {
-        return "pt-56";
+        return "pt-24";
     }
 };
 
@@ -139,6 +174,7 @@ const selectResumeLanguage = (name) => {
         } else {
             language.selected = false;
         }
+        localStorage.setItem("resumeLanguage", name);
     });
 };
 
@@ -153,7 +189,29 @@ const resumeList = ref([
     }
 ]);
 
-onMounted(() => {});
+onMounted(() => {
+    // Sets the resume language to the one stored in local storage
+    if ((localStorage.getItem("resumeLanguage") && localStorage.getItem("resumeLanguage") === "ENGLISH") || localStorage.getItem("resumeLanguage") === "FRANCAIS") {
+        selectResumeLanguage(localStorage.getItem("resumeLanguage"));
+    } else {
+        localStorage.setItem("resumeLanguage", "FRANCAIS");
+    }
+
+    // Sets the pixellated font to the one stored in local storage
+    if (localStorage.getItem("pixellatedFont")) {
+        if (localStorage.getItem("pixellatedFont") === "true") {
+            localStorage.setItem("pixellatedFont", true);
+            accessibilitySettingsList.value.find((setting) => setting.name === "Pixellated font").selected = true;
+        } else if (localStorage.getItem("pixellatedFont") === "false") {
+            localStorage.setItem("pixellatedFont", false);
+            accessibilitySettingsList.value.find((setting) => setting.name === "Pixellated font").selected = false;
+        } else {
+            localStorage.setItem("pixellatedFont", true);
+        }
+    } else {
+        localStorage.setItem("pixellatedFont", true);
+    }
+});
 
 watch(
     () => route.path,
@@ -167,6 +225,13 @@ watch(
         }
     }
 );
+
+const accessibilitySettingsList = ref([
+    {
+        name: "Pixellated font",
+        selected: true
+    }
+]);
 
 const choiceList = ref([
     {
@@ -187,6 +252,16 @@ const choiceList = ref([
     {
         name: "Projects",
         path: "/projects",
+        externalLink: false
+    },
+    {
+        name: "Contact",
+        path: "/contact",
+        externalLink: false
+    },
+    {
+        name: "Accessibility",
+        path: "/accessibility",
         externalLink: false
     }
 ]);
@@ -295,11 +370,16 @@ const projectList = ref([
 }
 
 body {
-    font-family: "Castlevania", Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     font-size: 20px;
     color: white;
     background-image: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 32, 1) 11%, rgba(65, 65, 150, 1) 100%);
     background-attachment: fixed;
+}
+
+.pixellated-font {
+    font-family: "Castlevania";
+    font-size: 20px;
 }
 
 .statue {
