@@ -3,11 +3,11 @@
         <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', setMainMenuSizeBasedOnPage()]">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="breathing-select-red">
-                    <a v-if="!isMainMenu" @click.prevent="goBackButton()" class="block hover:cursor-pointer breathing-text">
+                    <a v-if="!isMainMenu" @click.prevent="goBackButton()" @mouseenter="playSound('hover')" @mousedown="playSound('click')" class="block hover:cursor-pointer breathing-text">
                         {{ "-- Go back" }}
                     </a>
                 </ul>
-                <ul v-if="isMainMenu" v-for="choice in choiceList" class="breathing-select-red text-center">
+                <ul v-if="isMainMenu" v-for="choice in choiceList" class="breathing-select-red text-center" @mouseenter="playSound('hover')" @mousedown="playSound('click')">
                     <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu" class="block">{{ choice.name }}</router-link>
                     <a v-else :href="choice.path" target="_blank" rel="noopener noreferrer" class="block">{{ choice.name }}</a>
                 </ul>
@@ -23,7 +23,7 @@
                                     <p class="">{{ game.description }}</p>
                                 </div>
                                 <div class="flex justify-center pb-4" v-if="game.repository && route.path === '/games' + game.path">
-                                    {{ "Github link --&nbsp;" }} <a :href="game.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red">{{ "Here" }}</a>
+                                    {{ "Github link --&nbsp;" }} <a :href="game.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red" @mouseenter="playSound('hover')" @mousedown="playSound('click')">{{ "Here" }}</a>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4 pr-2 pl-2 pb-0.5">
                                     <img v-for="image in game.images" v-if="game.images && route.path === '/games' + game.path" :src="getImgurLinkPng(image)" class="" />
@@ -32,14 +32,14 @@
                             </div>
                         </div>
                         <div v-else>
-                            <ul v-for="game in gameList" class="breathing-select-red text-center">
+                            <ul v-for="game in gameList" class="breathing-select-red text-center" @mouseenter="playSound('hover')" @mousedown="playSound('click')">
                                 <router-link :to="{ path: '/games' + game.path }" class="block"> {{ game.name }}</router-link>
                             </ul>
                         </div>
                     </div>
                     <div v-if="route.path === '/resume'">
                         <div class="flex justify-center items-center divide-x p-1">
-                            <label v-for="language in resumeList" class="block hover:cursor-pointer breathing-select-red p-1" @click.prevent="selectResumeLanguage(language.name)">
+                            <label v-for="language in resumeList" class="block hover:cursor-pointer breathing-select-red p-1" @mouseenter="playSound('hover')" @mousedown="playSound('click')" @click.prevent="selectResumeLanguage(language.name)">
                                 {{ language.name }}
                             </label>
                         </div>
@@ -58,7 +58,7 @@
                                     <p class="">{{ project.description }}</p>
                                 </div>
                                 <div class="flex justify-center pb-4" v-if="project.repository && route.path === '/projects' + project.path">
-                                    {{ "Github link --&nbsp;" }} <a :href="project.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red">{{ "Here" }}</a>
+                                    {{ "Github link --&nbsp;" }} <a :href="project.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red" @mouseenter="playSound('hover')" @mousedown="playSound('click')">{{ "Here" }}</a>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4 pr-2 pl-2 pb-0.5">
                                     <img v-for="image in project.images" v-if="project.images && route.path === '/projects' + project.path" :src="getImgurLinkPng(image)" class="" />
@@ -68,7 +68,7 @@
                         </div>
                         <div v-else>
                             <ul v-for="project in projectList">
-                                <div class="breathing-select-red text-center">
+                                <div class="breathing-select-red text-center" @mouseenter="playSound('hover')" @mousedown="playSound('click')">
                                     <router-link class="block" :to="{ path: '/projects' + project.path }"> {{ project.name }}</router-link>
                                 </div>
                             </ul>
@@ -82,8 +82,9 @@
                         <div class="grid gap-4">
                             <h1 class="text-5xl text-center">Accessibility</h1>
                             <div v-for="setting in accessibilitySettingsList" class="flex flex-row items-center">
-                                {{ "-&nbsp;" + setting.name + "&nbsp;" }}
-                                <img class="block hover:cursor-pointer" :src="getButtonBasedOnState(setting.selected)" @click.prevent="toggleAccessibilitySetting(setting)" />
+                                {{ "&nbsp;" }}
+                                <img class="hover:cursor-pointer" @mousedown="playSound('click')" :src="getButtonBasedOnState(setting.selected)" @click.prevent="toggleAccessibilitySetting(setting)" />
+                                {{ "&nbsp;" + setting.name + "&nbsp;" }}
                             </div>
                         </div>
                     </div>
@@ -104,6 +105,9 @@ import englishResume from "/assets/CV_Julien_Augugliaro_EN.pdf";
 import onButton from "/assets/on.png";
 import offButton from "/assets/off.png";
 
+import hoverSound from "/assets/hover.ogg";
+import clickSound from "/assets/click.ogg";
+
 const route = useRoute();
 const router = useRouter();
 
@@ -113,6 +117,18 @@ const mainMenuExpanded = ref(false);
 const notExpandedStyle = ref(["border", "border-white", "w-1/4", "p-1", "transition-all", "min-w-fit", "min-h-fit"]);
 
 const expandedStyle = ref(["border", "border-white", "w-3/4", "p-1", "transition-all"]);
+
+const playSound = (soundName) => {
+    if (localStorage.getItem("sounds") === "false") {
+        return;
+    } else {
+        if (soundList.value.find((e) => e.name === soundName)) {
+            const sound = new Audio(soundList.value.find((e) => e.name === soundName).source);
+            sound.volume = 0.01;
+            sound.play();
+        }
+    }
+};
 
 const getPixellatedFont = () => {
     if (localStorage.getItem("pixellatedFont") === "true") {
@@ -132,7 +148,12 @@ const getButtonBasedOnState = (state) => {
 
 const toggleAccessibilitySetting = (setting) => {
     setting.selected = !setting.selected;
-    localStorage.setItem("pixellatedFont", setting.selected);
+    if (setting.name === "Pixellated font") {
+        localStorage.setItem("pixellatedFont", setting.selected);
+    }
+    if (setting.name === "Sounds") {
+        localStorage.setItem("sounds", setting.selected);
+    }
 };
 
 const getImgurLinkPng = (code) => {
@@ -211,6 +232,21 @@ onMounted(() => {
     } else {
         localStorage.setItem("pixellatedFont", true);
     }
+
+    // Sets the sounds to the one stored in local storage
+    if (localStorage.getItem("sounds")) {
+        if (localStorage.getItem("sounds") === "true") {
+            localStorage.setItem("sounds", true);
+            accessibilitySettingsList.value.find((setting) => setting.name === "Sounds").selected = true;
+        } else if (localStorage.getItem("sounds") === "false") {
+            localStorage.setItem("sounds", false);
+            accessibilitySettingsList.value.find((setting) => setting.name === "Sounds").selected = false;
+        } else {
+            localStorage.setItem("sounds", true);
+        }
+    } else {
+        localStorage.setItem("sounds", true);
+    }
 });
 
 watch(
@@ -230,6 +266,21 @@ const accessibilitySettingsList = ref([
     {
         name: "Pixellated font",
         selected: true
+    },
+    {
+        name: "Sounds",
+        selected: true
+    }
+]);
+
+const soundList = ref([
+    {
+        name: "hover",
+        source: hoverSound
+    },
+    {
+        name: "click",
+        source: clickSound
     }
 ]);
 
