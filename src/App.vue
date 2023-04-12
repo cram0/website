@@ -124,7 +124,7 @@ const playSound = (soundName) => {
     } else {
         if (soundList.value.find((e) => e.name === soundName)) {
             const sound = new Audio(soundList.value.find((e) => e.name === soundName).source);
-            sound.volume = 0.01;
+            sound.volume = 0.1;
             sound.play();
         }
     }
