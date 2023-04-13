@@ -95,7 +95,7 @@
         </div>
         <img src="/assets/statue.png" class="statue" />
         <div class="flex flex-row items-end fixed bottom-0 left-0 pl-1 pb-1">
-            <img v-for="locale in i18n.availableLocales" :src="'/assets/' + locale + '.svg'" :alt="locale" class="w-8 p-0.5 hover:cursor-pointer" @mouseenter="playSound('hover')" @mousedown="playSound('click')" @click.prevent="setLocale(locale)" />
+            <img v-for="locale in i18n.availableLocales" :src="locale + '.svg'" :alt="locale" class="w-8 p-0.5 hover:cursor-pointer" @mouseenter="playSound('hover')" @mousedown="playSound('click')" @click.prevent="setLocale(locale)" />
         </div>
     </div>
 </template>
