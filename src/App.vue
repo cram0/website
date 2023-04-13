@@ -78,11 +78,12 @@
                     </div>
 
                     <div v-if="route.path === '/contact'">
-                        {{ t("workInProgress") }}
+                        <h1 class="text-5xl text-center">{{ "Contact" }}</h1>
+                        <p>{{ "Email : j.augugliaro[at]outlook.fr" }}</p>
                     </div>
-                    <div v-if="route.path === '/accessibility'">
+                    <div v-if="route.path === '/settings'">
                         <div class="grid gap-4">
-                            <h1 class="text-5xl text-center">{{ t("accessibility") }}</h1>
+                            <h1 class="text-5xl text-center">{{ t("settings") }}</h1>
                             <div v-for="setting in accessibilitySettingsList" class="flex flex-row items-center">
                                 {{ "&nbsp;" }}
                                 <img class="hover:cursor-pointer" @mousedown="playSound('click')" :src="getButtonBasedOnState(setting.selected)" @click.prevent="toggleAccessibilitySetting(setting)" />
@@ -135,7 +136,7 @@ const i18n = useI18n({
             projects: "Projects",
             games: "Games",
             contact: "Contact",
-            accessibility: "Accessibility",
+            settings: "Settings",
             sounds: "Sounds",
             here: "Here",
             pixellatedFont: "Pixellated font",
@@ -149,7 +150,7 @@ const i18n = useI18n({
             projects: "Projets",
             games: "Jeux",
             contact: "Contact",
-            accessibility: "Accessibilite",
+            settings: "Options",
             sounds: "Sons",
             here: "Ici",
             pixellatedFont: "Police pixellisee",
@@ -374,8 +375,8 @@ const choiceList = ref([
         externalLink: false
     },
     {
-        name: "Accessibility",
-        path: "/accessibility",
+        name: "Settings",
+        path: "/settings",
         externalLink: false
     }
 ]);

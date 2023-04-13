@@ -24,8 +24,8 @@ const router = createRouter({
             name: "contact"
         },
         {
-            path: "/accessibility",
-            name: "accessibility"
+            path: "/settings",
+            name: "settings"
         }
     ]
 });
