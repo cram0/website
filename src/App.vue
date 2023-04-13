@@ -78,7 +78,7 @@
                     </div>
 
                     <div v-if="route.path === '/contact'">
-                        <h1 class="text-5xl text-center">{{ "Contact" }}</h1>
+                        <h1 class="text-5xl text-center pb-4">{{ "Contact" }}</h1>
                         <p>{{ "Email : j.augugliaro[at]outlook.fr" }}</p>
                     </div>
                     <div v-if="route.path === '/settings'">
