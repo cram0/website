@@ -18,6 +18,14 @@ const router = createRouter({
         {
             path: "/resume",
             name: "resume"
+        },
+        {
+            path: "/contact",
+            name: "contact"
+        },
+        {
+            path: "/accessibility",
+            name: "accessibility"
         }
     ]
 });

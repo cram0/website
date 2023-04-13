@@ -4,12 +4,12 @@
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="breathing-select-red">
                     <a v-if="!isMainMenu" @click.prevent="goBackButton()" @mouseenter="playSound('hover')" @mousedown="playSound('click')" class="block hover:cursor-pointer breathing-text">
-                        {{ "-- Go back" }}
+                        {{ "-- " + t("back") }}
                     </a>
                 </ul>
                 <ul v-if="isMainMenu" v-for="choice in choiceList" class="breathing-select-red text-center" @mouseenter="playSound('hover')" @mousedown="playSound('click')">
-                    <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu" class="block">{{ choice.name }}</router-link>
-                    <a v-else :href="choice.path" target="_blank" rel="noopener noreferrer" class="block">{{ choice.name }}</a>
+                    <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu" class="block">{{ t(choice.name.toLowerCase()) }}</router-link>
+                    <a v-else :href="choice.path" rel="noopener noreferrer" class="block">{{ choice.name }}</a>
                 </ul>
 
                 <div v-if="mainMenuExpanded">
@@ -23,7 +23,7 @@
                                     <p class="">{{ game.description }}</p>
                                 </div>
                                 <div class="flex justify-center pb-4" v-if="game.repository && route.path === '/games' + game.path">
-                                    {{ "Github link --&nbsp;" }} <a :href="game.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red" @mouseenter="playSound('hover')" @mousedown="playSound('click')">{{ "Here" }}</a>
+                                    {{ t("githubLink") + " --&nbsp;" }} <a :href="game.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red" @mouseenter="playSound('hover')" @mousedown="playSound('click')">{{ t("here") }}</a>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4 pr-2 pl-2 pb-0.5">
                                     <img v-for="image in game.images" v-if="game.images && route.path === '/games' + game.path" :src="getImgurLinkPng(image)" class="" />
@@ -32,6 +32,7 @@
                             </div>
                         </div>
                         <div v-else>
+                            <h1 class="text-5xl text-center pb-4">{{ t("games") }}</h1>
                             <ul v-for="game in gameList" class="breathing-select-red text-center" @mouseenter="playSound('hover')" @mousedown="playSound('click')">
                                 <router-link :to="{ path: '/games' + game.path }" class="block"> {{ game.name }}</router-link>
                             </ul>
@@ -58,7 +59,7 @@
                                     <p class="">{{ project.description }}</p>
                                 </div>
                                 <div class="flex justify-center pb-4" v-if="project.repository && route.path === '/projects' + project.path">
-                                    {{ "Github link --&nbsp;" }} <a :href="project.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red" @mouseenter="playSound('hover')" @mousedown="playSound('click')">{{ "Here" }}</a>
+                                    {{ "Github link --&nbsp;" }} <a :href="project.repository" target="_blank" rel="noopener noreferrer" class="hover:cursor-pointer breathing-select-red" @mouseenter="playSound('hover')" @mousedown="playSound('click')">{{ t("here") }}</a>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4 pr-2 pl-2 pb-0.5">
                                     <img v-for="image in project.images" v-if="project.images && route.path === '/projects' + project.path" :src="getImgurLinkPng(image)" class="" />
@@ -67,6 +68,7 @@
                             </div>
                         </div>
                         <div v-else>
+                            <h1 class="text-5xl text-center pb-4">{{ t("projects") }}</h1>
                             <ul v-for="project in projectList">
                                 <div class="breathing-select-red text-center" @mouseenter="playSound('hover')" @mousedown="playSound('click')">
                                     <router-link class="block" :to="{ path: '/projects' + project.path }"> {{ project.name }}</router-link>
@@ -76,21 +78,24 @@
                     </div>
 
                     <div v-if="route.path === '/contact'">
-                        {{ "Work in progress .." }}
+                        {{ t("workInProgress") }}
                     </div>
                     <div v-if="route.path === '/accessibility'">
                         <div class="grid gap-4">
-                            <h1 class="text-5xl text-center">Accessibility</h1>
+                            <h1 class="text-5xl text-center">{{ t("accessibility") }}</h1>
                             <div v-for="setting in accessibilitySettingsList" class="flex flex-row items-center">
                                 {{ "&nbsp;" }}
                                 <img class="hover:cursor-pointer" @mousedown="playSound('click')" :src="getButtonBasedOnState(setting.selected)" @click.prevent="toggleAccessibilitySetting(setting)" />
-                                {{ "&nbsp;" + setting.name + "&nbsp;" }}
+                                {{ "&nbsp;" + t(setting.name) }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <img src="/assets/statue.png" class="statue" />
+        </div>
+        <img src="/assets/statue.png" class="statue" />
+        <div class="flex flex-row items-end fixed bottom-0 left-0 pl-1 pb-1">
+            <img v-for="locale in i18n.availableLocales" :src="'/assets/' + locale + '.svg'" :alt="locale" class="w-8 p-0.5 hover:cursor-pointer" @mouseenter="playSound('hover')" @mousedown="playSound('click')" @click.prevent="setLocale(locale)" />
         </div>
     </div>
 </template>
@@ -108,6 +113,8 @@ import offButton from "/assets/off.png";
 import hoverSound from "/assets/hover.ogg";
 import clickSound from "/assets/click.ogg";
 
+import { useI18n } from "vue-i18n";
+
 const route = useRoute();
 const router = useRouter();
 
@@ -117,6 +124,49 @@ const mainMenuExpanded = ref(false);
 const notExpandedStyle = ref(["border", "border-white", "w-1/4", "p-1", "transition-all", "min-w-fit", "min-h-fit"]);
 
 const expandedStyle = ref(["border", "border-white", "w-3/4", "p-1", "transition-all"]);
+
+const i18n = useI18n({
+    locale: "en",
+    fallbackLocale: "en",
+    messages: {
+        en: {
+            home: "Home",
+            resume: "Resume",
+            projects: "Projects",
+            games: "Games",
+            contact: "Contact",
+            accessibility: "Accessibility",
+            sounds: "Sounds",
+            here: "Here",
+            pixellatedFont: "Pixellated font",
+            githubLink: "Github link",
+            workInProgress: "Work in progress ..",
+            back: "Go back"
+        },
+        fr: {
+            home: "Accueil",
+            resume: "CV",
+            projects: "Projets",
+            games: "Jeux",
+            contact: "Contact",
+            accessibility: "Accessibilite",
+            sounds: "Sons",
+            here: "Ici",
+            pixellatedFont: "Police pixellisee",
+            githubLink: "Lien Github",
+            workInProgress: "Travail en cours ..",
+            back: "Retour"
+        }
+    }
+});
+
+const { t } = i18n;
+i18n.locale.value = "fr";
+
+const setLocale = (locale) => {
+    i18n.locale.value = locale;
+    localStorage.setItem("locale", locale);
+};
 
 const playSound = (soundName) => {
     if (localStorage.getItem("sounds") === "false") {
@@ -148,10 +198,10 @@ const getButtonBasedOnState = (state) => {
 
 const toggleAccessibilitySetting = (setting) => {
     setting.selected = !setting.selected;
-    if (setting.name === "Pixellated font") {
+    if (setting.name === "pixellatedFont") {
         localStorage.setItem("pixellatedFont", setting.selected);
     }
-    if (setting.name === "Sounds") {
+    if (setting.name === "sounds") {
         localStorage.setItem("sounds", setting.selected);
     }
 };
@@ -222,10 +272,10 @@ onMounted(() => {
     if (localStorage.getItem("pixellatedFont")) {
         if (localStorage.getItem("pixellatedFont") === "true") {
             localStorage.setItem("pixellatedFont", true);
-            accessibilitySettingsList.value.find((setting) => setting.name === "Pixellated font").selected = true;
+            accessibilitySettingsList.value.find((setting) => setting.name === "pixellatedFont").selected = true;
         } else if (localStorage.getItem("pixellatedFont") === "false") {
             localStorage.setItem("pixellatedFont", false);
-            accessibilitySettingsList.value.find((setting) => setting.name === "Pixellated font").selected = false;
+            accessibilitySettingsList.value.find((setting) => setting.name === "pixellatedFont").selected = false;
         } else {
             localStorage.setItem("pixellatedFont", true);
         }
@@ -237,15 +287,28 @@ onMounted(() => {
     if (localStorage.getItem("sounds")) {
         if (localStorage.getItem("sounds") === "true") {
             localStorage.setItem("sounds", true);
-            accessibilitySettingsList.value.find((setting) => setting.name === "Sounds").selected = true;
+            accessibilitySettingsList.value.find((setting) => setting.name === "sounds").selected = true;
         } else if (localStorage.getItem("sounds") === "false") {
             localStorage.setItem("sounds", false);
-            accessibilitySettingsList.value.find((setting) => setting.name === "Sounds").selected = false;
+            accessibilitySettingsList.value.find((setting) => setting.name === "sounds").selected = false;
         } else {
             localStorage.setItem("sounds", true);
         }
     } else {
         localStorage.setItem("sounds", true);
+    }
+
+    // Sets the locale to the one stored in local storage
+    if (localStorage.getItem("locale")) {
+        if (localStorage.getItem("locale") === "fr") {
+            setLocale("fr");
+        } else if (localStorage.getItem("locale") === "en") {
+            setLocale("en");
+        } else {
+            setLocale("en");
+        }
+    } else {
+        setLocale("en");
     }
 });
 
@@ -264,11 +327,11 @@ watch(
 
 const accessibilitySettingsList = ref([
     {
-        name: "Pixellated font",
+        name: "pixellatedFont",
         selected: true
     },
     {
-        name: "Sounds",
+        name: "sounds",
         selected: true
     }
 ]);
