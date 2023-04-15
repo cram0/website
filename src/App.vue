@@ -17,7 +17,7 @@
                         <div v-if="route.path.startsWith('/games/')">
                             <div v-for="game in gameList">
                                 <div class="flex justify-center" v-if="route.path === '/games' + game.path">
-                                    <h1 class="text-5xl pb-4">{{ game.name }}</h1>
+                                    <h1 class="text-5xl pb-4 pl-4 pr-4">{{ game.name }}</h1>
                                 </div>
                                 <div class="flex justify-center pb-4" v-if="route.path === '/games' + game.path">
                                     <p class="">{{ game.description }}</p>
@@ -96,7 +96,7 @@
         </div>
         <img src="/assets/statue.png" class="statue" />
         <div class="flex flex-row items-end fixed bottom-0 left-0 pl-1 pb-1">
-            <img v-for="locale in i18n.availableLocales" :src="locale + '.svg'" :alt="locale" class="w-8 p-0.5 hover:cursor-pointer" @mouseenter="playSound('hover')" @mousedown="playSound('click')" @click.prevent="setLocale(locale)" />
+            <img v-for="locale in i18n.availableLocales" :src="'/' + locale + '.svg'" :alt="locale" class="w-8 p-0.5 hover:cursor-pointer" @mouseenter="playSound('hover')" @mousedown="playSound('click')" @click.prevent="setLocale(locale)" />
         </div>
     </div>
 </template>
