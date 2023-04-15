@@ -76,7 +76,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div v-if="route.path === '/contact'">
                         <h1 class="text-5xl text-center pb-4">{{ "Contact" }}</h1>
                         <p>{{ "Email : j.augugliaro[at]outlook.fr" }}</p>
@@ -89,6 +88,35 @@
                                 <img class="hover:cursor-pointer" @mousedown="playSound('click')" :src="getButtonBasedOnState(setting.selected)" @click.prevent="toggleAccessibilitySetting(setting)" />
                                 {{ "&nbsp;" + t(setting.name) }}
                             </div>
+                        </div>
+                    </div>
+                    <div v-if="route.path.startsWith('/blog')">
+                        <div v-if="route.path.startsWith('/blog/')">
+                            <div v-for="post in blogArticleList">
+                                <div class="flex flex-col p-2" v-if="route.path === '/blog' + post.path">
+                                    <p class="text-5xl text-center">{{ post.name }}</p>
+                                    <p class="text-lg text-center">{{ post.author }}</p>
+
+                                    <Markdown v-if="articleLoaded" :source="articleSource" />
+                                    <p v-else>{{ "Article loading ..." }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <ul v-for="post in blogArticleList">
+                                <div
+                                    class="flex flex-row justify-between breathing-select-red hover:cursor-pointer text-center pr-2 pl-2"
+                                    @mouseenter="playSound('hover')"
+                                    @mousedown="playSound('click')"
+                                    @click.prevent="
+                                        router.push({ path: '/blog' + post.path });
+                                        readContentFromArticle('/articles/' + post.articleName);
+                                    "
+                                >
+                                    <p>{{ post.name }}</p>
+                                    <i class="block">{{ post.date }}</i>
+                                </div>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -104,6 +132,8 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+
+import Markdown from "vue3-markdown-it";
 
 import frenchResume from "/assets/CV_Julien_Augugliaro_FR.pdf";
 import englishResume from "/assets/CV_Julien_Augugliaro_EN.pdf";
@@ -124,7 +154,7 @@ const mainMenuExpanded = ref(false);
 
 const notExpandedStyle = ref(["border", "border-white", "w-1/4", "p-1", "transition-all", "min-w-fit", "min-h-fit"]);
 
-const expandedStyle = ref(["border", "border-white", "w-3/4", "p-1", "transition-all"]);
+const expandedStyle = ref(["border", "border-white", "w-3/4", "transition-all"]);
 
 const i18n = useI18n({
     locale: "en",
@@ -135,6 +165,7 @@ const i18n = useI18n({
             resume: "Resume",
             projects: "Projects",
             games: "Games",
+            blog: "Blog",
             contact: "Contact",
             settings: "Settings",
             sounds: "Sounds",
@@ -149,6 +180,7 @@ const i18n = useI18n({
             resume: "CV",
             projects: "Projets",
             games: "Jeux",
+            blog: "Blog",
             contact: "Contact",
             settings: "Options",
             sounds: "Sons",
@@ -163,6 +195,14 @@ const i18n = useI18n({
 
 const { t } = i18n;
 i18n.locale.value = "fr";
+
+const articleLoaded = ref(false);
+const articleSource = ref("");
+const readContentFromArticle = async (path) => {
+    articleLoaded.value = false;
+    articleSource.value = await (await fetch(path)).text();
+    articleLoaded.value = true;
+};
 
 const setLocale = (locale) => {
     i18n.locale.value = locale;
@@ -216,13 +256,7 @@ const getImgurLinkGif = (code) => {
 };
 
 const goBackButton = () => {
-    if (route.path.startsWith("/projects/")) {
-        router.push("/projects");
-    } else if (route.path.startsWith("/games/")) {
-        router.push("/games");
-    } else {
-        router.push("/");
-    }
+    router.go(-1);
 };
 
 const setMainMenuSizeBasedOnPage = () => {
@@ -360,6 +394,11 @@ const choiceList = ref([
         externalLink: false
     },
     {
+        name: "Blog",
+        path: "/blog",
+        externalLink: false
+    },
+    {
         name: "Games",
         path: "/games",
         externalLink: false
@@ -452,6 +491,17 @@ const projectList = ref([
         description: "A simple game based on John Conway's Game of Life",
         repository: "https://github.com/cram0/Game_of_Life",
         path: "/game_of_life"
+    }
+]);
+
+// Articles should be hosted on a server
+const blogArticleList = ref([
+    {
+        name: "How to create a simple game in C++ using SFML",
+        articleName: "test.md",
+        date: "2023/04/15",
+        author: "cram",
+        path: "/how-to-create-a-simple-game-in-cpp-using-sfml"
     }
 ]);
 </script>
