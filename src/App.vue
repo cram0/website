@@ -8,7 +8,7 @@
                     </a>
                 </ul>
                 <ul v-if="isMainMenu" v-for="choice in choiceList" class="breathing-select-red text-center" @mouseenter="playSound('hover')" @mousedown="playSound('click')">
-                    <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu" class="block">{{ t(choice.name.toLowerCase()) }}</router-link>
+                    <router-link v-if="!choice.externalLink" :to="{ path: choice.path }" @click="isMainMenu = !isMainMenu" class="block">{{ t(choice.name.toLowerCase()) + " " }}<img v-if="choice.icon" :src="'/assets/' + choice.icon" class="h-4 inline-block" /></router-link>
                     <a v-else :href="choice.path" rel="noopener noreferrer" class="block">{{ choice.name }}</a>
                 </ul>
 
@@ -416,7 +416,8 @@ const choiceList = ref([
     {
         name: "Settings",
         path: "/settings",
-        externalLink: false
+        externalLink: false,
+        icon: "gear.svg"
     }
 ]);
 
@@ -544,7 +545,7 @@ body {
 
 .pixellated-font {
     font-family: "Castlevania";
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .statue {
