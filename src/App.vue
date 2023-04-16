@@ -1,6 +1,6 @@
 <template>
     <div :class="getPixellatedFont()">
-        <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', setMainMenuSizeBasedOnPage()]">
+        <div id="center-box" :class="['flex', 'justify-center', 'items-center', 'transition-all', setMainMenuSizeBasedOnPage(), 'pb-2']">
             <div :class="[mainMenuExpanded ? expandedStyle : notExpandedStyle]">
                 <ul class="breathing-select-red">
                     <a v-if="!isMainMenu" @click.prevent="goBackButton()" @mouseenter="playSound('hover')" @mousedown="playSound('click')" class="block hover:cursor-pointer breathing-text">
@@ -76,7 +76,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div v-if="route.path === '/contact'">
+                    <div v-if="route.path === '/contact'" class="p-2">
                         <h1 class="text-5xl text-center pb-4">{{ "Contact" }}</h1>
                         <p>{{ "Email : j.augugliaro[at]outlook.fr" }}</p>
                     </div>
