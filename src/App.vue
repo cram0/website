@@ -90,35 +90,6 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="route.path.startsWith('/blog')">
-                        <div v-if="route.path.startsWith('/blog/')">
-                            <div v-for="post in blogArticleList">
-                                <div class="flex flex-col p-2" v-if="route.path === '/blog' + post.path">
-                                    <p class="text-5xl text-center">{{ post.name }}</p>
-                                    <p class="text-lg text-center">{{ post.author }}</p>
-
-                                    <Markdown v-if="articleLoaded" :source="articleSource" />
-                                    <p v-else>{{ "Article loading ..." }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <ul v-for="post in blogArticleList">
-                                <div
-                                    class="flex flex-row justify-between breathing-select-red hover:cursor-pointer text-center pr-2 pl-2"
-                                    @mouseenter="playSound('hover')"
-                                    @mousedown="playSound('click')"
-                                    @click.prevent="
-                                        router.push({ path: '/blog' + post.path });
-                                        readContentFromArticle('/articles/' + post.articleName);
-                                    "
-                                >
-                                    <p>{{ post.name }}</p>
-                                    <i class="block">{{ post.date }}</i>
-                                </div>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -391,11 +362,6 @@ const choiceList = ref([
     {
         name: "Resume",
         path: "/resume",
-        externalLink: false
-    },
-    {
-        name: "Blog",
-        path: "/blog",
         externalLink: false
     },
     {
