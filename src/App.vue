@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <img src="/assets/statue.png" class="statue" />
+        <img src="/assets/statue.png" class="statue hover:cursor-pointer" @mousedown="playDraculaDialogues()" />
         <div class="flex flex-row items-end fixed bottom-0 left-0 pl-1 pb-1">
             <img v-for="locale in i18n.availableLocales" :src="'/' + locale + '.svg'" :alt="locale" class="w-8 p-0.5 hover:cursor-pointer" @mouseenter="playSound('hover')" @mousedown="playSound('click')" @click.prevent="setLocale(locale)" />
         </div>
@@ -104,8 +104,6 @@
 import { onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import Markdown from "vue3-markdown-it";
-
 import frenchResume from "/assets/CV_Julien_Augugliaro_FR.pdf";
 import englishResume from "/assets/CV_Julien_Augugliaro_EN.pdf";
 
@@ -114,6 +112,10 @@ import offButton from "/assets/off.png";
 
 import hoverSound from "/assets/hover.ogg";
 import clickSound from "/assets/click.ogg";
+
+import draculaDialogue1 from "/assets/what-is-a-man.ogg";
+import draculaDialogue2 from "/assets/pile-of-secrets.ogg";
+import draculaDialogue3 from "/assets/enough-talk.ogg";
 
 import { useI18n } from "vue-i18n";
 
@@ -350,6 +352,32 @@ const soundList = ref([
     {
         name: "click",
         source: clickSound
+    }
+]);
+
+const playDraculaDialogues = () => {
+    const sound = new Audio(draculaDialogues.value[draculaDialoguesIndex.value].source);
+    sound.volume = 0.1;
+    sound.play();
+    draculaDialoguesIndex.value++;
+    if (draculaDialoguesIndex.value === draculaDialogues.value.length) {
+        draculaDialoguesIndex.value = 0;
+    }
+};
+
+const draculaDialoguesIndex = ref(0);
+const draculaDialogues = ref([
+    {
+        index: 0,
+        source: draculaDialogue1
+    },
+    {
+        index: 1,
+        source: draculaDialogue2
+    },
+    {
+        index: 2,
+        source: draculaDialogue3
     }
 ]);
 
